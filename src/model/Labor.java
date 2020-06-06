@@ -122,7 +122,9 @@ public class Labor implements ILabor{
         int frecuenciaEjecucion;
         ControlFisico controlFisico;
         
+        System.out.println("Nombre control fisico");
         nombreControlFisico = entrada.readLine();
+        System.out.println("Frecuencia aplicacion");
         frecuenciaEjecucion = Integer.parseInt(entrada.readLine());
         
         controlFisico = new ControlFisico(nombreControlFisico, frecuenciaEjecucion);
@@ -142,6 +144,7 @@ public class Labor implements ILabor{
             this.productosControl.add(nuevoProducto);
             System.out.println("¿Desea agregar otro producto?: 1. Si, 2. No");
             opcion = Integer.parseInt(entrada.readLine());
+            
             if(opcion == 2){
                 estaAgregando = false;
             }

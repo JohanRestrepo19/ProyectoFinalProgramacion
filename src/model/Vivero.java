@@ -81,6 +81,7 @@ public class Vivero implements IVivero{
         ArrayList<IControlFisico> controlesFisicos = new ArrayList();
         IControlFisico nuevoControl = new ControlFisico();
         
+        System.out.println("Nombre de la labor");
         nombreLabor = entrada.readLine();
         
         nuevaLabor.setNombre(nombreLabor);
@@ -133,10 +134,10 @@ public class Vivero implements IVivero{
         
         for (Labor labor : this.labores) {
             System.out.println("---------------------------");
-            System.out.println("\tNombre labor: " + labor.getNombre());
-            System.out.println("\tProductos control: ");
+            System.out.println("Nombre labor: " + labor.getNombre());
+            System.out.println("Productos control: ");
             labor.mostrarInformacionProductosControl();
-            System.out.println("\tControles fisicos: ");
+            System.out.println("Controles fisicos: ");
             labor.mostrarInformacionControlesFisicos();
             System.out.println("");
         }
