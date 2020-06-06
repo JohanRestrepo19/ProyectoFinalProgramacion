@@ -37,6 +37,7 @@ public class Fecha {
         this.anyo = anyo;
     }
     
+    
     public String mostrarFecha(){
         return (this.dia + "/" + this.mes + "/" + this.anyo);
     }

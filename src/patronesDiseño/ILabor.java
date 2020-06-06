@@ -1,13 +1,13 @@
 package patronesDiseño;
 
+import java.io.IOException;
 import model.ControlFisico;
-import model.ProductoControl;
 
 public interface ILabor {
-    public ProductoControl crearProductoControl();
-    public ControlFisico crearControlFisico();
-    public void agregarProductoControl();
-    public void agregarControlFisico();
+    public IProductoControl crearProductoControl()throws IOException;
+    public IControlFisico crearControlFisico() throws IOException;
+    public void agregarProductoControl()throws IOException;
+    public void agregarControlFisico()throws IOException;
     public void mostrarInformacionProductosControl();
     public void mostrarInformacionControlesFisicos();
 }

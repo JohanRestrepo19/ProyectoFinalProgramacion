@@ -4,14 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import patronesDiseño.IControlFisico;
 import patronesDiseño.ILabor;
+import patronesDiseño.IProductoControl;
 
 public class Labor implements ILabor{
     private String nombre;
-    private ArrayList<ProductoControl> productoControl = new ArrayList();
-    private ArrayList<ControlFisico> controlesFisicos = new ArrayList();
+    private ArrayList<IProductoControl> productosControl = new ArrayList();
+    private ArrayList<IControlFisico> controlesFisicos = new ArrayList();
 
     public Labor() {
     }
@@ -28,125 +28,160 @@ public class Labor implements ILabor{
         this.nombre = nombre;
     }
 
-    public ArrayList<ProductoControl> getProductoControl() {
-        return productoControl;
+    public ArrayList<IProductoControl> getProductosControl() {
+        return productosControl;
     }
 
-    public void setProductoControl(ArrayList<ProductoControl> productoControl) {
-        this.productoControl = productoControl;
+    public void setProductosControl(ArrayList<IProductoControl> productosControl) {
+        this.productosControl = productosControl;
     }
 
-    public ArrayList<ControlFisico> getControlesFisicos() {
+   
+
+    public ArrayList<IControlFisico> getControlesFisicos() {
         return controlesFisicos;
     }
 
-    public void setControlesFisicos(ArrayList<ControlFisico> controlesFisicos) {
+    public void setControlesFisicos(ArrayList<IControlFisico> controlesFisicos) {
         this.controlesFisicos = controlesFisicos;
     }
-    
-    
-    public void agregarLabores() throws IOException{
+
+    @Override
+    public IProductoControl crearProductoControl () throws IOException {
+        
         BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
-        Labor nuevaLabor;
+        int opcionProducto, frecuenciaAplicacion, periodoCarencia, valorProducto;
+        String registroICA, nombreProducto, nombreHongo;
+        Fecha fechaUltimaAplicacion; 
+        IProductoControl nuevoProducto;
+        
+        System.out.println("------------");
+        System.out.println("1. Crear producto control plagas.");
+        System.out.println("2. Crear producto control fertilizantes.");
+        System.out.println("3. Crear producto control hongo");
+        System.out.println("------------");
+        opcionProducto = Integer.parseInt(entrada.readLine());
+
+        switch (opcionProducto) {
+            case 1:
+                System.out.println("Nombre producto: ");
+                nombreProducto = entrada.readLine();
+                System.out.println("Registro ICA: ");
+                registroICA = entrada.readLine();
+                System.out.println("Frecuencia aplicacion: ");
+                frecuenciaAplicacion = Integer.parseInt(entrada.readLine());
+                System.out.println("Valor producto: ");
+                valorProducto = Integer.parseInt(entrada.readLine());
+                System.out.println("Fecha ultima aplicacion: dia/mes/año");
+                fechaUltimaAplicacion = new Fecha (Integer.parseInt(entrada.readLine()),Integer.parseInt(entrada.readLine()),Integer.parseInt(entrada.readLine()));
+                nuevoProducto = new ProductoControlFertilizante(fechaUltimaAplicacion, registroICA, nombreProducto, frecuenciaAplicacion, valorProducto);
+                break;
+
+            case 2: //producto control plaga
+                System.out.println("Nombre producto: ");
+                nombreProducto = entrada.readLine();
+                System.out.println("Registro ICA: ");
+                registroICA = entrada.readLine();
+                System.out.println("Frecuencia aplicacion: ");
+                frecuenciaAplicacion = Integer.parseInt(entrada.readLine());
+                System.out.println("Valor producto: ");
+                valorProducto = Integer.parseInt(entrada.readLine());
+                System.out.println("Periodo de carencia: ");
+                periodoCarencia = Integer.parseInt(entrada.readLine());
+                nuevoProducto = new ProductoControlPlaga(periodoCarencia, registroICA, nombreProducto, frecuenciaAplicacion, valorProducto);
+                break;
+
+            case 3: //Producto control hongo
+                System.out.println("Nombre producto: ");
+                nombreProducto = entrada.readLine();
+                System.out.println("Registro ICA: ");
+                registroICA = entrada.readLine();
+                System.out.println("Frecuencia aplicacion: ");
+                frecuenciaAplicacion = Integer.parseInt(entrada.readLine());
+                System.out.println("Valor producto: ");
+                valorProducto = Integer.parseInt(entrada.readLine());
+                System.out.println("Periodo de carencia: ");
+                periodoCarencia = Integer.parseInt(entrada.readLine());
+                System.out.println("Nombre del hongo que afecta a la planta: ");
+                nombreHongo = entrada.readLine();
+
+                nuevoProducto = new ProductoControlHongo(periodoCarencia, nombreHongo, registroICA, nombreProducto, frecuenciaAplicacion, valorProducto);
+                break;
+
+            default:
+                throw new AssertionError();
+        }
+
+    return nuevoProducto;
+    }
+
+    @Override
+    public ControlFisico crearControlFisico() throws IOException{
+        BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
+        String nombreControlFisico;
+        int frecuenciaEjecucion;
+        ControlFisico controlFisico;
+        
+        nombreControlFisico = entrada.readLine();
+        frecuenciaEjecucion = Integer.parseInt(entrada.readLine());
+        
+        controlFisico = new ControlFisico(nombreControlFisico, frecuenciaEjecucion);
+        
+        return controlFisico;
+    }
+
+    @Override
+    public void agregarProductoControl() throws IOException{
+        BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
+        IProductoControl nuevoProducto;
         int opcion;
         boolean estaAgregando =  true;
         
         while(estaAgregando){
-            nuevaLabor = crearLabor();
-            this.labores.add(nuevaLabor);
-            System.out.println("¿Desea agregar otra labor?: 1. Si, 2. No");
+            nuevoProducto = crearProductoControl();
+            this.productosControl.add(nuevoProducto);
+            System.out.println("¿Desea agregar otro producto?: 1. Si, 2. No");
             opcion = Integer.parseInt(entrada.readLine());
             if(opcion == 2){
                 estaAgregando = false;
             }
         }
-        
     }
 
     @Override
-    public ProductoControl crearProductoControl() {
-        try {
-            int opcionProducto, frecuenciaAplicacion, periodoDeCarencia, valorProducto;
-            String registroICA, nombreProducto, nombreHongo;
-            Fecha fechaUltimaAplicacion = new Fecha(); 
-            ProductoControl nuevoProducto = new ProductoControl();
-            
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("------------");
-            System.out.println("1. Crear producto control plagas.");
-            System.out.println("2. Crear producto control fertilizantes.");
-            System.out.println("3. Crear producto control hongo");
-            System.out.println("------------");
-            opcionProducto = Integer.parseInt(entrada.readLine());
-            
-            switch (opcionProducto) {
-                case 1:
-                    System.out.println("Nombre: ");
-                    nombreProducto = entrada.readLine();
-                    System.out.println("Registro ICA: ");
-                    registroICA = entrada.readLine();
-                    System.out.println("Frecuencia aplicacion: ");
-                    frecuenciaAplicacion = Integer.parseInt(entrada.readLine());
-                    System.out.println("Valor producto: ");
-                    valorProducto = Integer.parseInt(entrada.readLine());
-                    System.out.println("Fecha ultima aplicacion: ");
-                    periodoDeCarencia = Integer.parseInt(entrada.readLine());
-                    nuevoProducto = new ProductoControlPlagas(registroICA, nombreProducto, frecuenciaAplicacion, periodoDeCarencia);
-                    break;
-                case 2:
-                    System.out.println("Nombre: ");
-                    nombreProducto = entrada.readLine();
-                    System.out.println("Registro ICA: ");
-                    registroICA = entrada.readLine();
-                    System.out.println("Frecuencia aplicacion: ");
-                    frecuenciaAplicacion = Integer.parseInt(entrada.readLine());
-                    System.out.println("Fecha de ultima aplicacion: ");
-                    fechaUltimaAplicacion = entrada.readLine();
-                    nuevoProducto = new ProductoControlFertilizantes(registroICA, nombreProducto, frecuenciaAplicacion, fechaUltimaAplicacion);
-                    break;
-                case 3:
-                    System.out.println("Nombre: ");
-                    nombreProducto = entrada.readLine();
-                    System.out.println("Registro ICA: ");
-                    registroICA = entrada.readLine();
-                    System.out.println("Frecuencia aplicacion: ");
-                    frecuenciaAplicacion = Integer.parseInt(entrada.readLine());
-                    System.out.println("Fecha de ultima aplicacion: ");
-                    fechaUltimaAplicacion = entrada.readLine();
-                    nuevoProducto = new ProductoControlFertilizantes(registroICA, nombreProducto, frecuenciaAplicacion, fechaUltimaAplicacion);
-                    break;
-                    
-                default:
-                    throw new AssertionError();
-            }   return nuevoProducto;
-        } catch (IOException ex) {
-            Logger.getLogger(Labor.class.getName()).log(Level.SEVERE, null, ex);
+    public void agregarControlFisico() throws IOException{
+        BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
+        IControlFisico nuevoControl;
+        int opcion;
+        boolean estaAgregando =  true;
+        
+        while(estaAgregando){
+            nuevoControl = crearControlFisico();
+            this.controlesFisicos.add(nuevoControl);
+            System.out.println("¿Desea agregar otro control fisico?: 1. Si, 2. No");
+            opcion = Integer.parseInt(entrada.readLine());
+            if(opcion == 2){
+                estaAgregando = false;
+            }
         }
     }
 
     @Override
-    public ControlFisico crearControlFisico() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void agregarProductoControl() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void agregarControlFisico() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void mostrarInformacionProductosControl() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (IProductoControl producto : productosControl) {
+            System.out.println("---------------------------");
+            producto.mostrarInformacion();
+            System.out.println("");
+        }
     }
 
     @Override
     public void mostrarInformacionControlesFisicos() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (IControlFisico control : controlesFisicos) {
+            System.out.println("---------------------------");
+            control.mostrarInformacion();
+            System.out.println("");
+        }
     }
     
 }
